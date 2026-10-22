@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         IMAGE_NAME = "stelabiju/mediplus-devsecops"
-        GITOPS_REPO = "https://github.com/YOUR_USERNAME/mediplus-gitops.git"
     }
 
     stages {
@@ -35,30 +34,29 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
-                    sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
-                    sh 'docker push $IMAGE_NAME:latest'
-                    sh 'docker logout'
+                    sh '''
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push $IMAGE_NAME:$BUILD_NUMBER
+                        docker push $IMAGE_NAME:latest
+                        docker logout
+                    '''
                 }
             }
         }
 
-        stage('Update GitOps Repository') {
+        stage('Update GitOps Manifest') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'Github_jenkins', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
                     sh '''
-                        git clone https://$GIT_USER:$GIT_PASS@${GITOPS_REPO#https://} gitops
-
-                        cd gitops
-
-                        sed -i "s|stelabiju/mediplus-devsecops:.*|stelabiju/mediplus-devsecops:$BUILD_NUMBER|" manifest/deployment.yaml
-
                         git config user.name "Jenkins"
                         git config user.email "jenkins@example.com"
 
+                        sed -i "s|image: stelabiju/mediplus-devsecops:.*|image: stelabiju/mediplus-devsecops:$BUILD_NUMBER|" manifest/deployment.yaml
+
                         git add manifest/deployment.yaml
                         git commit -m "Update Mediplus image to build $BUILD_NUMBER"
-                        git push origin main
+
+                        git push https://$GIT_USER:$GIT_PASS@github.com/stelabiju/mediplus.git HEAD:main
                     '''
                 }
             }
