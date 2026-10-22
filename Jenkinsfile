@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "stelabiju/mediplus-devsecops"
+        GITOPS_REPO = "https://github.com/YOUR_USERNAME/mediplus-gitops.git"
     }
 
     stages {
@@ -38,6 +39,27 @@ pipeline {
                     sh 'docker push $IMAGE_NAME:$BUILD_NUMBER'
                     sh 'docker push $IMAGE_NAME:latest'
                     sh 'docker logout'
+                }
+            }
+        }
+
+        stage('Update GitOps Repository') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'Github_jenkins', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                    sh '''
+                        git clone https://$GIT_USER:$GIT_PASS@${GITOPS_REPO#https://} gitops
+
+                        cd gitops
+
+                        sed -i "s|stelabiju/mediplus-devsecops:.*|stelabiju/mediplus-devsecops:$BUILD_NUMBER|" k8s/deployment.yaml
+
+                        git config user.name "Jenkins"
+                        git config user.email "jenkins@example.com"
+
+                        git add k8s/deployment.yaml
+                        git commit -m "Update Mediplus image to build $BUILD_NUMBER"
+                        git push origin main
+                    '''
                 }
             }
         }
