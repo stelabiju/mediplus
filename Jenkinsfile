@@ -51,12 +51,12 @@ pipeline {
 
                         cd gitops
 
-                        sed -i "s|stelabiju/mediplus-devsecops:.*|stelabiju/mediplus-devsecops:$BUILD_NUMBER|" k8s/deployment.yaml
+                        sed -i "s|stelabiju/mediplus-devsecops:.*|stelabiju/mediplus-devsecops:$BUILD_NUMBER|" manifest/deployment.yaml
 
                         git config user.name "Jenkins"
                         git config user.email "jenkins@example.com"
 
-                        git add k8s/deployment.yaml
+                        git add manifest/deployment.yaml
                         git commit -m "Update Mediplus image to build $BUILD_NUMBER"
                         git push origin main
                     '''
