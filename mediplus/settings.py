@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-y7l(cti5k-!+u+!wo1236^h5+2a1v2g#s596t&ya!yhfct2e!e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -93,7 +93,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-         'NAME': 'django.contrib.auth.3assword_validation.CommonPasswordValidator',
+         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
@@ -117,8 +117,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),) 
-STATICFILES_DIRS=[STATIC_URL]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
 

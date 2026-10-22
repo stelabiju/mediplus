@@ -15,32 +15,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('userview',views.userview),
+    path('', views.index, name='root'),
+    path('admin/', admin.site.urls),
 
+    path('userview', views.userview),
+    path('userdelete/<int:id>', views.userdelete, name='userdelete'),
 
-    path('userdelete/<int:id>',views.userdelete,name="userdelete"),
-    
+    path('userupdate/userupdates/<int:id>', views.userupdates, name='userupdates'),
 
+    path('doctor_register', views.doctor_register),
+    path('doctor_view', views.doctor_view),
+    path('doctordelete/<int:id>', views.doctordelete, name='doctordelete'),
+    path('doctorupdate/<int:id>', views.doctorupdate, name='doctorupdate'),
+    path('doctorupdate/doctorupdates/<int:id>', views.doctorupdates, name='doctorupdates'),
 
-path('userupdate/userupdates/<int:id>',views.userupdates,name="userupdates"),
-    path('doctor_register',views.doctor_register),
-    path('doctor_view',views.doctor_view),
-    path('doctordelete/<int:id>',views.doctordelete,name="doctordelete"),
-    path('doctorupdate/<int:id>',views.doctorupdate,name="doctorupdate"),
-    path('doctorupdate/doctorupdates/<int:id>',views.doctorupdates,name="doctorupdates"),
     path('adminapp_view', views.adminapp_view),
-    
-
-
-    path('userupdate/<int:id>',views.userupdate,name="userupdate"),
-
-
-
-    
-    
-    ]
-         
+    path('userupdate/<int:id>', views.userupdate, name='userupdate'),
+]
