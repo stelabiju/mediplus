@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: mediplus
-          image: stelabiju/mediplus-devsecops:latest
+          image: stelabiju/mediplus-devsecops:4
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
